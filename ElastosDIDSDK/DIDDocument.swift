@@ -153,6 +153,7 @@ public class DIDDocument {
         self._meta = doc.getMeta()
     }
 
+    /// The unique identifier of the DID document
     public var subject: DID {
         return self._subject!
     }
@@ -161,43 +162,74 @@ public class DIDDocument {
         self._subject = subject
     }
 
+    /// PublicKeys count
     public var publicKeyCount: Int {
         return self.publicKeyMap.count() { value -> Bool in return true }
     }
 
+    /// Public Keys
+    /// - Returns: Public Keys
     public func publicKeys() -> Array<PublicKey> {
         return self.publicKeyMap.values() { value -> Bool in return true }
     }
 
+    /// Select public Keys
+    /// - Parameters:
+    ///   - byId: Public key id
+    ///   - andType: Public key type
+    /// - Returns: Public keys
     public func selectPublicKeys(byId: DIDURL, andType: String?) -> Array<PublicKey> {
         return self.publicKeyMap.select(byId, andType) { value -> Bool in return true }
     }
 
+    /// Select public Keys
+    /// - Parameters:
+    ///   - byId: Public key id
+    ///   - andType: Public key type
+    /// - Returns: Public keys
     public func selectPublicKeys(byId: String, andType: String?) throws -> Array<PublicKey> {
         let id = try DIDURL(subject, byId)
         return selectPublicKeys(byId: id, andType: andType)
     }
 
+    /// Select public Keys
+    /// - Parameter byType: Public key type
+    /// - Returns: Public keys
     public func selectPublicKeys(byType: String) -> Array<PublicKey> {
         return self.publicKeyMap.select(nil, byType) { value -> Bool in return true }
     }
 
+    /// Select public Keys
+    /// - Parameter ofId: Public key id
+    /// - Returns: Public keys
     public func publicKey(ofId: DIDURL) -> PublicKey? {
         return self.publicKeyMap.get(forKey: ofId) { value -> Bool in return true }
     }
 
+    /// Select public Keys
+    /// - Parameter ofId: Public key id
+    /// - Returns: Public keys
     public func publicKey(ofId: String) throws -> PublicKey? {
         return publicKey(ofId: try DIDURL(subject, ofId))
     }
 
+    /// Whether the current DIDURL contains public key
+    /// - Parameter forId: Public key id
+    /// - Returns: True if it contains the current didurl value, false otherwise
     public func containsPublicKey(forId: DIDURL) -> Bool {
         return publicKey(ofId: forId) != nil
     }
 
+    /// Whether the current DIDURL contains public key
+    /// - Parameter forId: Public key id
+    /// - Returns: True if it contains the current didurl value, false otherwise
     public func containsPublicKey(forId: String) throws -> Bool {
         return try publicKey(ofId: forId) != nil
     }
 
+    /// Whether the current DIDURL contains private key
+    /// - Parameter forId: Public key id
+    /// - Returns: True if the key of the current didurl is included, otherwise false
     public func containsPrivateKey(forId: DIDURL) -> Bool {
         guard containsPublicKey(forId: forId) else {
             return false
@@ -209,6 +241,9 @@ public class DIDDocument {
         return store.containsPrivateKey(for: self.subject, id: forId)
     }
 
+    /// Whether the current DIDURL contains private key
+    /// - Parameter forId: Public key id
+    /// - Returns: True if the key of the current didurl is included, otherwise false
     public func containsPrivateKey(forId: String) -> Bool {
         do {
             return containsPrivateKey(forId: try DIDURL(self.subject, forId))
@@ -231,6 +266,7 @@ public class DIDDocument {
         return nil
     }
 
+    /// Default publicKey
     public var defaultPublicKey: DIDURL {
         return getDefaultPublicKey()!
     }
@@ -284,49 +320,80 @@ public class DIDDocument {
         return true
     }
 
+    /// AuthenticationKey count
     public var authenticationKeyCount: Int {
         return publicKeyMap.count() { value -> Bool in
             return (value as PublicKey).isAuthenticationKey
         }
     }
 
+    /// Authentication keys
+    /// - Returns: Authentication keys
     public func authenticationKeys() -> Array<PublicKey> {
         return publicKeyMap.values() { value -> Bool in
             return (value as PublicKey).isAuthenticationKey
         }
     }
 
+    /// Authentication keys
+    /// - Parameters:
+    ///   - byId: Public key id
+    ///   - andType: Public key type
+    /// - Returns: Authentication keys
     public func selectAuthenticationKeys(byId: DIDURL, andType: String?) -> Array<PublicKey> {
         return publicKeyMap.select(byId, andType) { value -> Bool in
             return (value as PublicKey).isAuthenticationKey
         }
     }
 
+    /// Authentication keys
+    /// - Parameters:
+    ///   - byId: Public key id
+    ///   - andType: Public key type
+    /// - Returns: Authentication keys
     public func selectAuthenticationKeys(byId: String, andType: String?) throws -> Array<PublicKey> {
         let id = try DIDURL(subject, byId)
         return selectAuthenticationKeys(byId: id, andType: andType)
     }
 
+    /// Authentication keys
+    /// - Parameters:
+    ///   - byId: Public key id
+    ///   - andType: Public key type
+    /// - Returns: Authentication keys
     public func selectAuthenticationKeys(byType: String) -> Array<PublicKey> {
         return publicKeyMap.select(nil, byType) { value -> Bool in
             return (value as PublicKey).isAuthenticationKey
         }
     }
 
+    /// PublicKey
+    /// - Parameter ofId: Public key id
+    /// - Returns: PublicKey
     public func authenticationKey(ofId: DIDURL) -> PublicKey? {
         return publicKeyMap.get(forKey: ofId) { value -> Bool in
             return (value as PublicKey).isAuthenticationKey
         }
     }
 
+    /// Authentication key
+    /// - Parameter ofId: Public key id
+    /// - Throws: Thrown error when failed to generate didurl
+    /// - Returns: Authentication key
     public func authenticationKey(ofId: String) throws -> PublicKey?  {
         return authenticationKey(ofId: try DIDURL(subject, ofId))
     }
 
+    /// Whether the current DIDURL contains authentication key
+    /// - Parameter forId: Public key id
+    /// - Returns: True if the key of the current didurl is included, otherwise false
     public func containsAuthenticationKey(forId: String) throws -> Bool {
         return try authenticationKey(ofId: forId) != nil
     }
 
+    /// Whether the current DIDURL contains authentication key
+    /// - Parameter forId: Public key id
+    /// - Returns: True if the key of the current didurl is included, otherwise false
     public func containsAuthenticationKey(forId: DIDURL) -> Bool {
         return authenticationKey(ofId: forId) != nil
     }
@@ -361,49 +428,79 @@ public class DIDDocument {
         return true
     }
 
+    /// Authorization key count
     public var authorizationKeyCount: Int {
         return publicKeyMap.count() { value -> Bool in
             return (value as PublicKey).isAthorizationKey
         }
     }
 
+    /// Authorization keys
+    /// - Returns: Authorization keys
     public func authorizationKeys() -> Array<PublicKey> {
         return publicKeyMap.values() { value -> Bool in
             return (value as PublicKey).isAthorizationKey
         }
     }
 
+    /// Authorization keys
+    /// - Parameters:
+    ///   - byId: Public key id
+    ///   - andType: Public key type
+    /// - Returns: Authorization keys
     public func selectAuthorizationKeys(byId: DIDURL, andType: String?) -> Array<PublicKey> {
         return publicKeyMap.select(byId, andType) { value -> Bool in
             return (value as PublicKey).isAthorizationKey
         }
     }
 
+    /// Authorization keys
+    /// - Parameters:
+    ///   - byId: Public key id
+    ///   - andType: Public key type
+    /// - Returns: Authorization keys
     public func selectAuthorizationKeys(byId: String, andType: String?) throws -> Array<PublicKey> {
         let id = try DIDURL(subject, byId)
         return selectAuthorizationKeys(byId: id, andType: andType)
     }
 
+    /// Authorization keys
+    /// - Parameter byType: Public key type
+    /// - Returns: Authorization keys
     public func selectAuthorizationKeys(byType: String) -> Array<PublicKey> {
         return publicKeyMap.select(nil, byType) { value -> Bool in
             return (value as PublicKey).isAthorizationKey
         }
     }
 
+    /// Authorization key
+    /// - Parameter ofId: Public key id
+    /// - Returns: Authorization key
     public func authorizationKey(ofId: DIDURL) -> PublicKey? {
         return publicKeyMap.get(forKey: ofId) { value -> Bool in
             return (value as PublicKey).isAthorizationKey
         }
     }
 
+    /// Authorization key
+    /// - Parameter ofId: Public key id
+    /// - Throws: Throw error when failed to generate didurl
+    /// - Returns: Authorization key
     public func authorizationKey(ofId: String) throws -> PublicKey?  {
         return authorizationKey(ofId: try DIDURL(subject, ofId))
     }
 
+    /// Whether the current id contains Authorization key
+    /// - Parameter forId: Public key id
+    /// - Throws: Throw error when failed to generate didurl
+    /// - Returns: Authorization key
     public func containsAuthorizationKey(forId: String) throws -> Bool {
         return try authorizationKey(ofId: forId) != nil
     }
 
+    /// Whether the current id contains Authorization key
+    /// - Parameter forId: Public key id
+    /// - Returns: Authorization key
     public func containsAuthorizationKey(forId: DIDURL) -> Bool {
         return authorizationKey(ofId: forId) != nil
     }
@@ -438,31 +535,55 @@ public class DIDDocument {
         return true
     }
 
+    /// Credential count
     public var credentialCount: Int {
         return credentialMap.count() { value -> Bool in return true }
     }
 
+    /// Verifiable credentials
+    /// - Returns: Verifiable credentials
     public func credentials() -> Array<VerifiableCredential> {
         return credentialMap.values() { value -> Bool in return true }
     }
 
+    /// Verifiable credentials
+    /// - Parameters:
+    ///   - byId: specify the identifier for the credential
+    ///   - andType: the credential types, which declare what data to expect in the credential
+    /// - Returns: Verifiable credentials
     public func selectCredentials(byId: DIDURL, andType: String?) -> Array<VerifiableCredential>  {
         return credentialMap.select(byId, andType) { value -> Bool in return true }
     }
 
+    /// Verifiable credentials
+    /// - Parameters:
+    ///   - byId: specify the identifier for the credential
+    ///   - andType: the credential types, which declare what data to expect in the credential
+    /// - Throws: Throw error when failed to generate didurl
+    /// - Returns: Verifiable credentials
     public func selectCredentials(byId: String, andType: String?) throws -> Array<VerifiableCredential>  {
         let id = try DIDURL(subject, byId)
         return selectCredentials(byId: id, andType: andType)
     }
 
+    /// Verifiable credentials
+    /// - Parameter byType: the credential types, which declare what data to expect in the credential
+    /// - Returns: Verifiable credentials
     public func selectCredentials(byType: String) -> Array<VerifiableCredential>  {
         return credentialMap.select(nil, byType) { value -> Bool in return true }
     }
 
+    /// Verifiable credential
+    /// - Parameter ofId: specify the identifier for the credential
+    /// - Returns: Verifiable credential
     public func credential(ofId: DIDURL) -> VerifiableCredential? {
         return credentialMap.get(forKey: ofId) { value -> Bool in return true }
     }
 
+    /// Verifiable credential
+    /// - Parameter ofId: specify the identifier for the credential
+    /// - Throws: Throw error when failed to generate didurl
+    /// - Returns: Verifiable credential
     public func credential(ofId: String) throws -> VerifiableCredential? {
         return credential(ofId: try DIDURL(subject, ofId))
     }
@@ -490,31 +611,55 @@ public class DIDDocument {
         return credentialMap.remove(id)
     }
 
+    /// Service count
     public var serviceCount: Int {
         return serviceMap.count() { value -> Bool in return true }
     }
 
+    /// Service
+    /// - Returns: Service
     public func services() -> Array<Service> {
         return serviceMap.values() { value -> Bool in return true }
     }
 
+    /// Service array
+    /// - Parameters:
+    ///   - byId: specify the identifier for the service
+    ///   - andType: specify the type for the service
+    /// - Returns: Service array
     public func selectServices(byId: DIDURL, andType: String?) -> Array<Service>  {
         return serviceMap.select(byId, andType) { value -> Bool in return true }
     }
 
+    /// Service array
+    /// - Parameters:
+    ///   - byId: specify the identifier for the service
+    ///   - andType: specify the type for the service
+    /// - Throws: Throw error when failed to generate didurl
+    /// - Returns: Service array
     public func selectServices(byId: String, andType: String?) throws -> Array<Service>  {
         let id = try DIDURL(subject, byId)
         return selectServices(byId: id, andType: andType)
     }
 
+    /// Service array
+    /// - Parameter byType: specify the type for the service
+    /// - Returns: Service array
     public func selectServices(byType: String) -> Array<Service>  {
         return serviceMap.select(nil, byType) { value -> Bool in return true }
     }
 
+    /// Service array
+    /// - Parameter ofId: specify the identifier for the service
+    /// - Returns: Service array
     public func service(ofId: DIDURL) -> Service? {
         return serviceMap.get(forKey: ofId) { value -> Bool in return true }
     }
 
+    /// Service array
+    /// - Parameter ofId: specify the identifier for the service
+    /// - Throws: Throw error when failed to generate didurl
+    /// - Returns: Service array
     public func service(ofId: String) throws -> Service? {
         return service(ofId: try DIDURL(subject, ofId))
     }
@@ -528,6 +673,7 @@ public class DIDDocument {
         return serviceMap.remove(id)
     }
 
+    /// when the document will expire
     public var expirationDate: Date? {
         return self._expirationDate
     }
@@ -536,6 +682,7 @@ public class DIDDocument {
         self._expirationDate = expirationDate
     }
 
+    /// Provide encrypted proof information for the integrity of DID documents
     public var proof: DIDDocumentProof {
         // Guaranteed that this field would not be nil because the object
         // was generated by "builder".
@@ -563,6 +710,11 @@ public class DIDDocument {
         self._meta = meta
     }
 
+    /// Set custom properties
+    /// - Parameters:
+    ///   - value: Custom attribute value
+    ///   - name: Custom attribute key
+    /// - Throws: Throw error when failed to set custom property
     public func setExtra(value: String, forName name: String) throws {
         guard !name.isEmpty else {
             throw DIDError.illegalArgument()
@@ -572,6 +724,9 @@ public class DIDDocument {
         try getMeta().store?.storeDidMeta(getMeta(), for: self.subject)
     }
 
+    /// Get custom properties
+    /// - Parameter forName: Custom attribute key
+    /// - Returns: Custom attribute value
     public func getExtra(forName: String) -> String? {
         return getMeta().getExtra(forName)
     }
@@ -581,6 +736,9 @@ public class DIDDocument {
         try getMeta().store?.storeDidMeta(getMeta(), for: self.subject)
     }
 
+    /// Set custom properties
+    /// - Parameter newValue: Custom attribute value
+    /// - Throws: Throw error when failed to set custom property
     public func setAlias(_ newValue: String) throws {
         guard !newValue.isEmpty else {
             throw DIDError.illegalArgument()
@@ -589,30 +747,38 @@ public class DIDDocument {
         try setAliasName(newValue)
     }
 
+    /// <#Description#>
+    /// - Throws: <#description#>
     public func unsetAlias() throws {
         try setAliasName(nil)
     }
 
+    /// Custom attribute key
     public var aliasName: String {
         return getMeta().aliasName
     }
 
+    /// Transaction id of the current ID transaction
     public var transactionId: String? {
         return getMeta().transactionId
     }
 
+    /// proof with updated date
     public var updatedDate: Date? {
         return getMeta().updatedDate
     }
 
+    /// is deactivated
     public var isDeactivated: Bool {
         return getMeta().isDeactivated
     }
 
+    /// Returns true when the DID theme has not expired, otherwise flase
     public var isExpired: Bool {
         return DateHelper.isExipired(self.expirationDate!)
     }
 
+    /// Returns true when the document verification is valid,  otherwise flase
     public var isGenuine: Bool {
         // Document should be signed (only) by default public key.
         guard proof.creator == defaultPublicKey else {
@@ -631,22 +797,45 @@ public class DIDDocument {
         }
     }
 
+    /// Returns true when the document verification is valid,  otherwise flase
     public var isValid: Bool {
         return !isDeactivated && !isExpired && isGenuine
     }
 
+    /// DIDDocumentBuilder
+    /// - Returns: Edit document
     public func editing() -> DIDDocumentBuilder {
         return DIDDocumentBuilder(self)
     }
 
+    /// DIDDocument signature
+    /// - Parameters:
+    ///   - storePassword: Locally encrypted password
+    ///   - data: Encrypted data
+    /// - Throws: Throw error when encryption fails
+    /// - Returns: Return signature result
     public func sign(using storePassword: String, for data: Data...) throws -> String {
         return try sign(self.defaultPublicKey, storePassword, data)
     }
 
+    /// DIDDocument signature
+    /// - Parameters:
+    ///   - withId: The id of the signed public key
+    ///   - storePassword: Locally encrypted password
+    ///   - data: Encrypted data
+    /// - Throws: Throw error when encryption fails
+    /// - Returns: Return signature result
     public func sign(withId: DIDURL, using storePassword: String, for data: Data...) throws -> String {
         return try sign(withId, storePassword, data)
     }
 
+    /// DIDDocument signature
+    /// - Parameters:
+    ///   - withId: The id of the signed public key
+    ///   - storePassword: Locally encrypted password
+    ///   - data: Encrypted data
+    /// - Throws: Throw error when encryption fails
+    /// - Returns: DIDDocument signature
     public func sign(withId: String, using storePassword: String, for data: Data...) throws -> String {
         return try sign(try DIDURL(self.subject, withId), storePassword, data)
     }
@@ -665,14 +854,34 @@ public class DIDDocument {
         return try getMeta().store!.sign(subject, id, storePassword, data)
     }
 
+    /// DidDocument verification
+    /// - Parameters:
+    ///   - signature: DIDDocument signature
+    ///   - data: Verify signed data
+    /// - Throws: Throws an error when the signature verification fails
+    /// - Returns: Returns true when the signature verification is successful
     public func verify(signature: String, onto data: Data...) throws -> Bool {
         return try verify(self.defaultPublicKey, signature, data)
     }
 
+    /// DidDocument verification
+    /// - Parameters:
+    ///   - withId: Verify the signed public key
+    ///   - signature: DIDDocument signature
+    ///   - data: Verify signed data
+    /// - Throws: Throws an error when the signature verification fails
+    /// - Returns: Returns true when the signature verification is successful
     public func verify(withId: DIDURL, using signature: String, onto data: Data...) throws -> Bool {
         return try verify(withId, signature, data)
     }
 
+    /// DidDocument verification
+    /// - Parameters:
+    ///   - withId: Verify the signed public key
+    ///   - signature: DIDDocument signature
+    ///   - data: Verify signed data
+    /// - Throws: Throws an error when the signature verification fails
+    /// - Returns: Returns true when the signature verification is successful
     public func verify(withId: String, using signature: String, onto data: Data...) throws -> Bool {
         return try verify(DIDURL(self.subject, withId), signature, data)
     }
@@ -879,6 +1088,10 @@ public class DIDDocument {
         return doc
     }
 
+    /// Generate DIDDocument
+    /// - Parameter data: Data to generate DIDDocument
+    /// - Throws: Error is thrown when generating document fails
+    /// - Returns: DIDDocument
     public class func convertToDIDDocument(fromData data: Data) throws -> DIDDocument {
         guard !data.isEmpty else {
             throw DIDError.illegalArgument()
@@ -897,14 +1110,26 @@ public class DIDDocument {
         return doc
     }
 
+    /// Generate DIDDocument
+    /// - Parameter fromJson: Json to generate DIDDocument
+    /// - Throws: Error is thrown when generating document fails
+    /// - Returns: DIDDocument
     public class func convertToDIDDocument(fromJson: String) throws -> DIDDocument {
         return try  convertToDIDDocument(fromData: fromJson.data(using: .utf8)!)
     }
 
+    /// Generate DIDDocument
+    /// - Parameter fromFileAtPath: Path to generate DIDDocument
+    /// - Throws: Error is thrown when generating document fails
+    /// - Returns: DIDDocument
     public class func convertToDIDDocument(fromFileAtPath : String) throws -> DIDDocument {
         return try convertToDIDDocument(fromJson: String(contentsOfFile: fromFileAtPath, encoding: .utf8))
     }
 
+    /// Generate DIDDocument
+    /// - Parameter url: URL to generate DIDDocument
+    /// - Throws: Error is thrown when generating document fails
+    /// - Returns: DIDDocument
     public class func convertToDIDDocument(fromUrl url: URL) throws -> DIDDocument {
         return try convertToDIDDocument(fromJson: String(contentsOf: url, encoding: .utf8))
     }
@@ -1028,30 +1253,57 @@ public class DIDDocument {
         return try toJson(normalized, forSign).data(using: .utf8)!
     }
 
+    /// Generate a string of documents
+    /// - Parameter normalized: Whether to simplify
+    /// - Throws: Throws an error when the document fails to convert to string
+    /// - Returns: DIDDocument string
     public func convertFromDIDDocument(_ normalized: Bool) throws -> String {
         return try toJson(normalized, false)
     }
 
+    /// Generate a string of documents
+    /// - Throws: Throws an error when the document fails to convert to string
+    /// - Returns: DIDDocument string
     public func convertFromDIDDocument() throws -> String {
         return try toJson(false, false)
     }
 
+    /// Generate data of documents
+    /// - Parameter normalized: Whether to simplify
+    /// - Throws: Throws an error when the document fails to convert to data
+    /// - Returns: DIDDocument data
     public func convertFromDIDDocument(_ normalized: Bool) throws -> Data {
         return try toJson(normalized, false)
     }
 
+    /// Generate data of documents
+    /// - Throws: Throws an error when the document fails to convert to data
+    /// - Returns: DIDDocument data
     public func convertFromDIDDocument() throws -> Data {
         return try toJson(false, false)
     }
 
+    /// The document generated by DIDDocument is saved to asFileAtPath
+    /// - Parameters:
+    ///   - normalized: Whether to simplify
+    ///   - asFileAtPath: Save route
+    /// - Throws: Throw errors when document conversion fails or storage fails
     public func convertFromDIDDocument(_ normalized: Bool, asFileAtPath: String) throws {
         return try convertFromDIDDocument(normalized, asURL: URL.init(fileURLWithPath: asFileAtPath))
     }
 
+    /// The document generated by DIDDocument is saved to asFileAtPath
+    /// - Parameter asFileAtPath: Save route
+    /// - Throws: Throw errors when document conversion fails or storage fails
     public func convertFromDIDDocument(asFileAtPath: String) throws {
         return try convertFromDIDDocument(false, asFileAtPath: asFileAtPath)
     }
 
+    /// The document generated by DIDDocument is saved to asURL
+    /// - Parameters:
+    ///   - normalized: Whether to simplify
+    ///   - asURL: Save route
+    /// - Throws: Throw errors when document conversion fails or storage fails
     public func convertFromDIDDocument(_ normalized: Bool, asURL: URL) throws {
         let data: Data = try convertFromDIDDocument(normalized)
         let fileManager = FileManager.default
@@ -1066,6 +1318,9 @@ public class DIDDocument {
         handle.write(data)
     }
 
+    /// The document generated by DIDDocument is saved to asURL
+    /// - Parameter asURL: Save route
+    /// - Throws: Throw errors when document conversion fails or storage fails
     public func convertFromDIDDocument(asURL: URL) throws {
         return try convertFromDIDDocument(false, asURL: asURL)
     }

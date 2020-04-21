@@ -8,6 +8,7 @@ public class Service: DIDObject {
         super.init(id, type)
     }
 
+    /// Service endpoint
     public var endpoint: String {
         return _endpoint
     }

@@ -34,6 +34,11 @@ public class DIDURL {
     private var _queryParameters: OrderedDictionary<String, String>?
     private var _meta: CredentialMeta?
 
+    /// Initialize DIDURL method
+    /// - Parameters:
+    ///   - id: A valid DID descriptor
+    ///   - url: A valid didurl or a valid did fragment
+    /// - Throws: Throws an error when the url is invalid or the parameter id and did are not equal
     public init(_ id: DID, _ url: String) throws {
         guard !url.isEmpty else {
             throw DIDError.illegalArgument("empty didurl string")
@@ -63,6 +68,9 @@ public class DIDURL {
         self._fragment = fragment
     }
     
+    /// Initialize DIDURL method
+    /// - Parameter url: A valid DID descriptor
+    /// - Throws: Throws an error when the url is invalid
     public init(_ url: String) throws {
         guard !url.isEmpty else {
             throw DIDError.illegalArgument()
@@ -70,8 +78,8 @@ public class DIDURL {
 
         do {
             try ParserHelper.parse(url, false, DIDURL.Listener(self))
-            Log.e(DIDURL.TAG, "Parsing didurl error: malformed didurl string \(url)")
         } catch {
+            Log.e(DIDURL.TAG, "Parsing didurl error: malformed didurl string \(url)")
             throw DIDError.malformedDIDURL("malformed DIDURL \(url)")
         }
     }
@@ -96,10 +104,15 @@ public class DIDURL {
         self._fragment = newValue
     }
 
+    /// <#Description#>
+    /// - Returns: <#description#>
     public func parameters() -> String? {
         return mapToString(_parameters, ";")
     }
 
+    /// <#Description#>
+    /// - Parameter ofKey: <#ofKey description#>
+    /// - Returns: <#description#>
     public func parameter(ofKey: String) -> String? {
         return _parameters?[ofKey]
     }

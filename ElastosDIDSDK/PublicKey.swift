@@ -21,22 +21,27 @@ public class PublicKey: DIDObject {
         self.init(id, Constants.DEFAULT_PUBLICKEY_TYPE, controller, keyBase58)
     }
 
+    /// DID of the corresponding private key controller
     public var controller: DID {
         return _controller
     }
 
+    /// Base58 encoded public key
     public var publicKeyBase58: String {
         return _keyBase58
     }
 
+    /// Public key
     public var publicKeyBytes: [UInt8] {
         return Base58.bytesFromBase58(_keyBase58)
     }
 
+    /// Public key
     public var publicKeyData: Data {
         return _keyBase58.data(using: .utf8)!
     }
 
+    /// Is AuthenticationKey
     public var isAuthenticationKey: Bool {
         return authenticationKey
     }
@@ -45,6 +50,7 @@ public class PublicKey: DIDObject {
         self.authenticationKey = newValue
     }
 
+    /// Is AthorizationKey
     public var isAthorizationKey: Bool {
         return authorizationKey
     }
