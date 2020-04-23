@@ -16,6 +16,10 @@ public class VerifiableCredentialBuilder {
         self.credential!.setIssuer(doc.subject)
     }
 
+    /// Specify an id for credential
+    /// - Parameter id: specify the identifier for the credential
+    /// - Throws: Throw an error when credential is nil
+    /// - Returns: VerifiableCredentialBuilder
     public func withId(_ id: DIDURL) throws -> VerifiableCredentialBuilder {
         guard let _ = credential else {
             throw DIDError.invalidState(Errors.CREDENTIAL_ALREADY_SEALED)
@@ -25,38 +29,53 @@ public class VerifiableCredentialBuilder {
         return self
     }
 
+    /// Specify an id for credential
+    /// - Parameter id: specify the identifier for the credential
+    /// - Throws: Throw an error when credential is nil
+    /// - Returns: VerifiableCredentialBuilder
     public func withId(_ id: String) throws -> VerifiableCredentialBuilder {
         guard !id.isEmpty else {
-            throw DIDError.illegalArgument()
+            throw DIDError.illegalArgument("id is empty")
         }
 
         return try withId(DIDURL(_target, id))
     }
 
+    /// Specify a type for credential
+    /// - Parameter types: the credential types, which declare what data to expect in the credential
+    /// - Throws: Throw an error when credential is nil , or types is nil
+    /// - Returns: VerifiableCredentialBuilder
     public func withTypes(_ types: String...) throws -> VerifiableCredentialBuilder {
         guard let _ = credential else {
             throw DIDError.invalidState(Errors.CREDENTIAL_ALREADY_SEALED)
         }
         guard types.count > 0 else {
-            throw DIDError.illegalArgument()
+            throw DIDError.illegalArgument("types is empty")
         }
 
         credential!.setType(types)
         return self
     }
     
+    /// Specify a type for credential
+    /// - Parameter types: the credential types, which declare what data to expect in the credential
+    /// - Throws: Throw an error when credential is nil , or types is nil
+    /// - Returns: VerifiableCredentialBuilder
     public func withTypes(_ types: Array<String>) throws -> VerifiableCredentialBuilder {
          guard let _ = credential else {
              throw DIDError.invalidState(Errors.CREDENTIAL_ALREADY_SEALED)
          }
          guard types.count > 0 else {
-             throw DIDError.illegalArgument()
+             throw DIDError.illegalArgument("types is empty")
          }
 
          credential!.setType(types)
          return self
      }
 
+    /// Set credential default expiration date
+    /// - Throws: Throw an error when credential is nil
+    /// - Returns: VerifiableCredentialBuilder
     public func withDefaultExpirationDate() throws -> VerifiableCredentialBuilder {
         guard let _ = credential else {
             throw DIDError.invalidState(Errors.CREDENTIAL_ALREADY_SEALED)
@@ -66,26 +85,35 @@ public class VerifiableCredentialBuilder {
         return self
     }
 
+    /// Set credential expiration date
+    /// - Parameter expirationDate: when the credential will expire
+    /// - Throws: Throw an error when credential is nil
+    /// - Returns: VerifiableCredentialBuilder
     public func withExpirationDate(_ expirationDate: Date) throws -> VerifiableCredentialBuilder {
         guard let _ = credential else {
             throw DIDError.invalidState(Errors.CREDENTIAL_ALREADY_SEALED)
         }
 
-        guard !DateHelper.isExpired(expirationDate, maxExpirationDate()) else {
-            throw DIDError.illegalArgument()
+        var exp = expirationDate
+        if DateHelper.isExpired(exp, maxExpirationDate()) {
+            exp = maxExpirationDate()
         }
 
         // TODO: check
-        credential!.setExpirationDate(expirationDate)
+        credential!.setExpirationDate(exp)
         return self
     }
 
-    public func withProperties(_ properites: Dictionary<String, String>) throws -> VerifiableCredentialBuilder {
+    /// Set claims about the subject of the credential
+    /// - Parameter properites: Credential dictionary data
+    /// - Throws: Throw an error when credential is nil or properites is nil
+    /// - Returns: VerifiableCredentialBuilder
+    public func withProperties(_ properites: [String: Any]) throws -> VerifiableCredentialBuilder {
         guard let _ = credential else {
             throw DIDError.invalidState(Errors.CREDENTIAL_ALREADY_SEALED)
         }
         guard !properites.isEmpty else {
-            throw DIDError.illegalArgument()
+            throw DIDError.illegalArgument("properites is empty")
         }
         // TODO: CHECK
         let jsonNode = JsonNode(properites)
@@ -96,12 +124,16 @@ public class VerifiableCredentialBuilder {
         return self
     }
 
+    /// Set claims about the subject of the credential
+    /// - Parameter json: Credential dictionary string
+    /// - Throws: Throw an error when credential is nil or properites is nil
+    /// - Returns: VerifiableCredentialBuilder
     public func withProperties(_ json: String) throws -> VerifiableCredentialBuilder {
         guard let _ = credential else {
             throw DIDError.invalidState(Errors.CREDENTIAL_ALREADY_SEALED)
         }
         guard !json.isEmpty else {
-            throw DIDError.illegalArgument()
+            throw DIDError.illegalArgument("properites is empty")
         }
         // TODO: CHECK
         let dic = try (JSONSerialization.jsonObject(with: json.data(using: .utf8)!, options: [JSONSerialization.ReadingOptions.init(rawValue: 0)]) as? [String: Any])
@@ -116,12 +148,16 @@ public class VerifiableCredentialBuilder {
         return self
     }
 
+    /// Set claims about the subject of the credential
+    /// - Parameter properties: Credential dictionary JsonNode
+    /// - Throws: Throw an error when credential is nil or properites is nil
+    /// - Returns: VerifiableCredentialBuilder
     public func withProperties(_ properties: JsonNode) throws -> VerifiableCredentialBuilder {
         guard let _ = credential else {
             throw DIDError.invalidState(Errors.CREDENTIAL_ALREADY_SEALED)
         }
         guard properties.count > 0 else {
-            throw DIDError.illegalArgument()
+            throw DIDError.illegalArgument("properites is empty")
         }
 
         let subject = VerifiableCredentialSubject(_target)
@@ -131,12 +167,16 @@ public class VerifiableCredentialBuilder {
         return self
     }
 
+    /// The edited credential attribute is integrated into the VerifiableCredential whole
+    /// - Parameter storePassword: Locally encrypted password
+    /// - Throws: Throws an error when the signature fails
+    /// - Returns: VerifiableCredential
     public func sealed(using storePassword: String) throws -> VerifiableCredential {
         guard let _ = credential else {
             throw DIDError.invalidState(Errors.CREDENTIAL_ALREADY_SEALED)
         }
         guard !storePassword.isEmpty else {
-            throw DIDError.illegalArgument()
+            throw DIDError.illegalArgument("storePassword is empty")
         }
         guard credential!.checkIntegrity() else {
             throw DIDError.malformedCredential("imcomplete credential")

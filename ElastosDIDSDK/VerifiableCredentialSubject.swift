@@ -8,26 +8,38 @@ public class VerifiableCredentialSubject {
         self._id = id
     }
 
+    /// specify the identifier for the credential
     public var did: DID {
         return self._id
     }
 
+    /// <#Description#>
     public var propertyCount: Int {
         return self._properties?.count ?? 0
     }
 
+    /// <#Description#>
+    /// - Returns: <#description#>
     public func getPropertiesAsString() -> String {
         return self._properties?.toString() ?? ""
     }
 
+    /// <#Description#>
+    /// - Returns: <#description#>
     public func getProperties() -> JsonNode? {
         return self._properties?.deepCopy()
     }
 
+    /// <#Description#>
+    /// - Parameter ofName: <#ofName description#>
+    /// - Returns: <#description#>
     public func getPropertyAsString(ofName: String) -> String? {
         return self._properties?.get(forKey: ofName)?.toString()
     }
 
+    /// <#Description#>
+    /// - Parameter ofName: <#ofName description#>
+    /// - Returns: <#description#>
     public func getProperty(ofName: String) -> JsonNode? {
         return self._properties?.get(forKey: ofName)
     }

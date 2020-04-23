@@ -16,7 +16,7 @@ public class VerifiableCredentialIssuer {
         // should make sure the key would be authenticationKey and
         // has corresponding private key to make sign.
         guard doc.containsAuthenticationKey(forId: key!) else {
-            throw DIDError.illegalArgument()
+            throw DIDError.illegalArgument("The key would be used to sign verifiable crendetial when using, builder to create a new verifiable credential. So,should make sure the key would be authenticationKey and has corresponding private key to make sign.")
         }
         guard doc.containsPrivateKey(forId: key!) else {
             throw DIDError.illegalArgument(Errors.NO_PRIVATE_KEY_EXIST)
@@ -36,18 +36,37 @@ public class VerifiableCredentialIssuer {
         try self.init(doc: doc, signKey: signKey)
     }
 
+    /// Initialization method
+    /// - Parameters:
+    ///   - doc: Specified DIDDocument
+    ///   - signKey: Specified DIDURL
+    /// - Throws: Throws an error when initialization fails
     public convenience init(_ doc: DIDDocument, _ signKey: DIDURL) throws {
         try self.init(doc: doc, signKey: signKey)
     }
 
+    /// Initialization method
+    /// - Parameter doc: Specified DIDDocument
+    /// - Throws: Throws an error when initialization fails
     public convenience init(_ doc: DIDDocument) throws {
         try self.init(doc: doc, signKey: nil)
     }
 
+    /// Initialization method
+    /// - Parameters:
+    ///   - did: Specified DID
+    ///   - signKey: Specified DIDURL
+    ///   - store: Specify the store to store DIDDocument
+    /// - Throws: Throws an error when initialization fails
     public convenience init(_ did: DID, _ signKey: DIDURL, _ store: DIDStore) throws {
         try self.init(did, signKey: signKey, store)
     }
 
+    /// Initialization method
+    /// - Parameters:
+    ///   - did: Specified DID
+    ///   - store: Specify the store to store DIDDocument
+    /// - Throws: Throws an error when initialization fails
     public convenience init(_ did: DID, _ store: DIDStore) throws {
         try self.init(did, signKey: nil, store)
     }
@@ -60,6 +79,10 @@ public class VerifiableCredentialIssuer {
         return _signKey
     }
 
+    /// Editing VerifiableCredential
+    /// - Parameter did: Specify the id of the editor
+    /// - Throws: <#description#>
+    /// - Returns: <#description#>
     public func editingVerifiableCredentialFor(did: String) throws -> VerifiableCredentialBuilder {
         return VerifiableCredentialBuilder(try DID(did), _issuerDoc, signKey)
     }

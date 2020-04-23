@@ -11,10 +11,12 @@ public class VerifiableCredentialProof {
         self._signature = signature
     }
 
+    /// the cryptographic signature suite that was used to generate the signature
     public var type: String {
         return _type
     }
 
+    /// the public key identifier that created the signature
     public var verificationMethod: DIDURL {
         return _verificationMethod
     }
