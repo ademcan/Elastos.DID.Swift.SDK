@@ -32,8 +32,8 @@ $ mkdir -p iphoneos
 $ cd iphoneos
 $ cmake -DHDKEY_ONLY=ON \
         -DIOS_PLATFORM="iphoneos" \
-        -DCMAKE_TOOLCHAIN_FILE=../../cmake/iOSToolchain.cmake \
-        ../..
+        -DCMAKE_TOOLCHAIN_FILE=../cmake/iOSToolchain.cmake \
+        ..
 $ make install
 ```
 
@@ -45,8 +45,8 @@ $ mkdir -p iphonesimulator
 $ cd iphoneosimulator
 $ cmake -DHDKEY_ONLY=ON \
         -DIOS_PLATFORM="iphonesimulator" \
-        -DCMAKE_TOOLCHAIN_FILE=../../cmake/iOSToolchain.cmake \
-        ../..
+        -DCMAKE_TOOLCHAIN_FILE=../cmake/iOSToolchain.cmake \
+        ..
 $ make install
 ```
 
